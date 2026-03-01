@@ -4,25 +4,38 @@ Custom skills for [Claude Code](https://claude.com/claude-code) that extend the 
 
 ## Installation
 
-Clone the repo directly as your skills folder:
-
-```bash
-git clone https://github.com/jabreeflor/claude-skills.git ~/.claude/skills
-```
-
-Or clone elsewhere and symlink the packages you want:
+Clone the repo and symlink the skill groups into your Claude Code skills folder. Claude Code requires each skill to be a **flat top-level directory** under `~/.claude/skills/`, so symlink the inner skill directories — not the group folders.
 
 ```bash
 git clone https://github.com/jabreeflor/claude-skills.git ~/claude-skills
-ln -s ~/claude-skills/browser-recording ~/.claude/skills/browser-recording
-ln -s ~/claude-skills/nova-loop-suite ~/.claude/skills/nova-loop-suite
+
+# Browser recording
+ln -s ~/claude-skills/browser-recording/record-browser ~/.claude/skills/record-browser
+ln -s ~/claude-skills/browser-recording/stop-recording ~/.claude/skills/stop-recording
+
+# Nova Loop
+ln -s ~/claude-skills/nova-loop-suite/nova-loop ~/.claude/skills/nova-loop
+ln -s ~/claude-skills/nova-loop-suite/nova-help ~/.claude/skills/nova-help
+ln -s ~/claude-skills/nova-loop-suite/cancel-nova ~/.claude/skills/cancel-nova
+ln -s ~/claude-skills/nova-loop-suite/commit-push-pr ~/.claude/skills/commit-push-pr
+
+# Discord
 ln -s ~/claude-skills/discord ~/.claude/skills/discord
+```
+
+Or install everything at once:
+
+```bash
+for skill in ~/claude-skills/browser-recording/*/  ~/claude-skills/nova-loop-suite/*/; do
+  ln -sf "$skill" ~/.claude/skills/
+done
+ln -sf ~/claude-skills/discord ~/.claude/skills/discord
 ```
 
 ## Structure
 
 ```
-~/.claude/skills/
+claude-skills/
 ├── browser-recording/
 │   ├── record-browser/    — Start screencast + automate interactions
 │   └── stop-recording/    — Stop screencast + finalize MP4
@@ -36,7 +49,7 @@ ln -s ~/claude-skills/discord ~/.claude/skills/discord
 
 ## Skills
 
-### `browser-recording` — Browser Screen Recording
+### Browser Recording
 
 Record browser interactions as MP4 video using Chrome DevTools Protocol.
 
@@ -50,7 +63,7 @@ Record browser interactions as MP4 video using Chrome DevTools Protocol.
 - Chrome DevTools MCP server with `--experimentalScreencast` flag
 - `ffmpeg` installed (re-encodes VP9 output to H.264 for universal playback)
 
-### `nova-loop-suite` — Autonomous Feature Builder
+### Nova Loop — Autonomous Feature Builder
 
 Autonomous build-verify-fix-publish-review cycle that takes a feature spec and ships it to a PR-ready state.
 
@@ -69,7 +82,7 @@ Autonomous build-verify-fix-publish-review cycle that takes a feature spec and s
 5. Publishes a PR via `/commit-push-pr`
 6. Self-reviews the diff — if issues are found, loops back to step 3
 
-### `discord` — Discord Automation
+### Discord Automation
 
 Control the Discord Desktop app through Chrome DevTools Protocol.
 
