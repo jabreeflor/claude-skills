@@ -1,6 +1,6 @@
 # Claude Code Skills
 
-Custom skills for [Claude Code](https://claude.com/claude-code) that extend the CLI with browser automation, autonomous development loops, Discord control, and git workflow shortcuts.
+Custom skills for [Claude Code](https://claude.com/claude-code) that extend the CLI with browser automation, terminal recording, autonomous development loops, Discord control, and git workflow shortcuts.
 
 ## Installation
 
@@ -12,6 +12,10 @@ git clone https://github.com/jabreeflor/claude-skills.git ~/claude-skills
 # Browser recording
 ln -s ~/claude-skills/browser-recording/record-browser ~/.claude/skills/record-browser
 ln -s ~/claude-skills/browser-recording/stop-recording ~/.claude/skills/stop-recording
+
+# Terminal recording
+ln -s ~/claude-skills/terminal-recording/record-terminal ~/.claude/skills/record-terminal
+ln -s ~/claude-skills/terminal-recording/stop-terminal-recording ~/.claude/skills/stop-terminal-recording
 
 # Nova Loop
 ln -s ~/claude-skills/nova-loop-suite/nova-loop ~/.claude/skills/nova-loop
@@ -26,7 +30,7 @@ ln -s ~/claude-skills/discord ~/.claude/skills/discord
 Or install everything at once:
 
 ```bash
-for skill in ~/claude-skills/browser-recording/*/  ~/claude-skills/nova-loop-suite/*/; do
+for skill in ~/claude-skills/browser-recording/*/  ~/claude-skills/terminal-recording/*/ ~/claude-skills/nova-loop-suite/*/; do
   ln -sf "$skill" ~/.claude/skills/
 done
 ln -sf ~/claude-skills/discord ~/.claude/skills/discord
@@ -39,6 +43,9 @@ claude-skills/
 ├── browser-recording/
 │   ├── record-browser/    — Start screencast + automate interactions
 │   └── stop-recording/    — Stop screencast + finalize MP4
+├── terminal-recording/
+│   ├── record-terminal/          — Record terminal sessions (asciicast/script/gif)
+│   └── stop-terminal-recording/  — Stop active recording + finalize output
 ├── nova-loop-suite/
 │   ├── nova-loop/         — Autonomous build→verify→fix→publish→review
 │   ├── nova-help/         — Explain Nova Loop and list commands
@@ -62,6 +69,25 @@ Record browser interactions as MP4 video using Chrome DevTools Protocol.
 - Chrome running with `--remote-debugging-port=9222`
 - Chrome DevTools MCP server with `--experimentalScreencast` flag
 - `ffmpeg` installed (re-encodes VP9 output to H.264 for universal playback)
+
+### Terminal Recording
+
+Record terminal sessions as asciicast, script logs, or animated GIFs.
+
+| Command | Description |
+|---------|-------------|
+| `/record-terminal [--output path] [--format asciicast\|script\|gif] [--commands "..."] [--title "..."]` | Start recording a terminal session |
+| `/stop-terminal-recording` | Stop an active terminal recording and finalize the output |
+
+**Formats:**
+- `asciicast` (default) — replayable in terminal via `asciinema play` or on asciinema.org
+- `script` — BSD/GNU `script` capture with timing, works on any system
+- `gif` — converts asciicast to animated GIF for sharing anywhere
+
+**Requirements:**
+- `asciinema` installed (for asciicast/gif formats)
+- `agg` installed (for gif conversion only)
+- `script` is pre-installed on macOS and Linux (for script format)
 
 ### Nova Loop — Autonomous Feature Builder
 
