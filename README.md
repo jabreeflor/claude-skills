@@ -6,32 +6,29 @@ Custom skills for [Claude Code](https://claude.com/claude-code) — browser auto
 
 ## Installation
 
-### Option 1 — npx (no global install required)
+### Option 1 — npx (recommended)
+
+Install everything at once:
 
 ```bash
-# Install individual skills via ClawHub
-npx clawhub install record-browser
-npx clawhub install stop-recording
-npx clawhub install record-terminal
-npx clawhub install stop-terminal-recording
-npx clawhub install nova-loop
-npx clawhub install nova-help
-npx clawhub install cancel-nova
-npx clawhub install commit-push-pr
-npx clawhub install discord
+npx skills add jabreeflor/claude-skills
 ```
 
-### Option 2 — ClawHub CLI (global)
+Install a specific skill:
 
 ```bash
-npm install -g clawhub
-
-clawhub install record-browser
-clawhub install nova-loop
-# etc.
+npx skills add jabreeflor/claude-skills --skill nova-loop
+npx skills add jabreeflor/claude-skills --skill record-browser
+npx skills add jabreeflor/claude-skills --skill discord
 ```
 
-### Option 3 — Clone & symlink
+Install globally (available across all projects):
+
+```bash
+npx skills add jabreeflor/claude-skills -g
+```
+
+### Option 2 — Clone & symlink
 
 ```bash
 git clone https://github.com/jabreeflor/claude-skills.git ~/claude-skills
