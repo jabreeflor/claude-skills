@@ -1,125 +1,150 @@
 # Claude Code Skills
 
-Custom skills for [Claude Code](https://claude.com/claude-code) that extend the CLI with browser automation, terminal recording, autonomous development loops, Discord control, and git workflow shortcuts.
+Custom skills for [Claude Code](https://claude.com/claude-code) — browser automation, terminal recording, autonomous build loops, and Discord control.
+
+---
 
 ## Installation
 
-Clone the repo and symlink the skill groups into your Claude Code skills folder. Claude Code requires each skill to be a **flat top-level directory** under `~/.claude/skills/`, so symlink the inner skill directories — not the group folders.
+### Option 1 — npx (no global install required)
+
+```bash
+# Install individual skills via ClawHub
+npx clawhub install record-browser
+npx clawhub install stop-recording
+npx clawhub install record-terminal
+npx clawhub install stop-terminal-recording
+npx clawhub install nova-loop
+npx clawhub install nova-help
+npx clawhub install cancel-nova
+npx clawhub install commit-push-pr
+npx clawhub install discord
+```
+
+### Option 2 — ClawHub CLI (global)
+
+```bash
+npm install -g clawhub
+
+clawhub install record-browser
+clawhub install nova-loop
+# etc.
+```
+
+### Option 3 — Clone & symlink
 
 ```bash
 git clone https://github.com/jabreeflor/claude-skills.git ~/claude-skills
 
-# Browser recording
-ln -s ~/claude-skills/browser-recording/record-browser ~/.claude/skills/record-browser
-ln -s ~/claude-skills/browser-recording/stop-recording ~/.claude/skills/stop-recording
-
-# Terminal recording
-ln -s ~/claude-skills/terminal-recording/record-terminal ~/.claude/skills/record-terminal
-ln -s ~/claude-skills/terminal-recording/stop-terminal-recording ~/.claude/skills/stop-terminal-recording
-
-# Nova Loop
-ln -s ~/claude-skills/nova-loop-suite/nova-loop ~/.claude/skills/nova-loop
-ln -s ~/claude-skills/nova-loop-suite/nova-help ~/.claude/skills/nova-help
-ln -s ~/claude-skills/nova-loop-suite/cancel-nova ~/.claude/skills/cancel-nova
-ln -s ~/claude-skills/nova-loop-suite/commit-push-pr ~/.claude/skills/commit-push-pr
-
-# Discord
-ln -s ~/claude-skills/discord ~/.claude/skills/discord
-```
-
-Or install everything at once:
-
-```bash
-for skill in ~/claude-skills/browser-recording/*/  ~/claude-skills/terminal-recording/*/ ~/claude-skills/nova-loop-suite/*/; do
+# Install everything at once
+for skill in ~/claude-skills/browser-recording/*/ ~/claude-skills/terminal-recording/*/ ~/claude-skills/nova-loop-suite/*/; do
   ln -sf "$skill" ~/.claude/skills/
 done
 ln -sf ~/claude-skills/discord ~/.claude/skills/discord
 ```
 
-## Structure
+> Claude Code requires each skill to be a **flat top-level directory** under `~/.claude/skills/`. When symlinking, link the inner skill folders — not the group folders.
 
-```
-claude-skills/
-├── browser-recording/
-│   ├── record-browser/    — Start screencast + automate interactions
-│   └── stop-recording/    — Stop screencast + finalize MP4
-├── terminal-recording/
-│   ├── record-terminal/          — Record terminal sessions (asciicast/script/gif)
-│   └── stop-terminal-recording/  — Stop active recording + finalize output
-├── nova-loop-suite/
-│   ├── nova-loop/         — Autonomous build→verify→fix→publish→review
-│   ├── nova-help/         — Explain Nova Loop and list commands
-│   ├── cancel-nova/       — Stop active loop + clean up worktrees
-│   └── commit-push-pr/    — Stage, commit, push, and create/update PR
-└── discord/               — Control Discord Desktop via CDP
-```
+---
 
 ## Skills
 
-### Browser Recording
+### 🎥 Browser Recording
 
-Record browser interactions as MP4 video using Chrome DevTools Protocol.
+Record browser interactions as MP4 using Chrome DevTools Protocol.
 
 | Command | Description |
 |---------|-------------|
-| `/record-browser [url] [--output path] [--actions "..."]` | Start a screencast, perform automated interactions, and save as MP4 |
-| `/stop-recording` | Stop an active screencast and finalize the video |
+| `/record-browser [url] [--output path] [--actions "..."]` | Start a screencast and save as MP4 |
+| `/stop-recording` | Stop the active screencast and finalize the video |
 
 **Requirements:**
 - Chrome running with `--remote-debugging-port=9222`
-- Chrome DevTools MCP server with `--experimentalScreencast` flag
-- `ffmpeg` installed (re-encodes VP9 output to H.264 for universal playback)
+- Chrome DevTools MCP server with `--experimentalScreencast`
+- `ffmpeg` (re-encodes VP9 → H.264 for universal playback)
 
-### Terminal Recording
+---
+
+### 🖥️ Terminal Recording
 
 Record terminal sessions as asciicast, script logs, or animated GIFs.
 
 | Command | Description |
 |---------|-------------|
 | `/record-terminal [--output path] [--format asciicast\|script\|gif] [--commands "..."] [--title "..."]` | Start recording a terminal session |
-| `/stop-terminal-recording` | Stop an active terminal recording and finalize the output |
+| `/stop-terminal-recording` | Stop the active recording and finalize output |
 
 **Formats:**
-- `asciicast` (default) — replayable in terminal via `asciinema play` or on asciinema.org
-- `script` — BSD/GNU `script` capture with timing, works on any system
-- `gif` — converts asciicast to animated GIF for sharing anywhere
+
+| Format | Notes |
+|--------|-------|
+| `asciicast` *(default)* | Replayable via `asciinema play` or asciinema.org |
+| `script` | BSD/GNU `script` capture — works on any system |
+| `gif` | Converts asciicast → animated GIF for easy sharing |
 
 **Requirements:**
-- `asciinema` installed (for asciicast/gif formats)
-- `agg` installed (for gif conversion only)
-- `script` is pre-installed on macOS and Linux (for script format)
+- `asciinema` (for asciicast/gif)
+- `agg` (for gif conversion only)
+- `script` — pre-installed on macOS and Linux
 
-### Nova Loop — Autonomous Feature Builder
+---
 
-Autonomous build-verify-fix-publish-review cycle that takes a feature spec and ships it to a PR-ready state.
+### 🔁 Nova Loop — Autonomous Feature Builder
+
+Fully autonomous build → verify → fix → publish → review cycle.
 
 | Command | Description |
 |---------|-------------|
-| `/nova-loop <spec.md> [--cycles N] [--retries N]` | Run the full autonomous loop on a feature spec |
-| `/nova-help` | Explain how Nova Loop works and list commands |
+| `/nova-loop <spec.md> [--cycles N] [--retries N]` | Run the full loop on a feature spec |
+| `/nova-help` | Explain Nova Loop and list all commands |
 | `/cancel-nova` | Stop an active loop and clean up worktrees |
-| `/commit-push-pr` | Stage, commit, push, and create/update a PR in one step |
+| `/commit-push-pr` | Stage, commit, push, and open/update a PR in one step |
 
 **How it works:**
+
 1. Creates an isolated git worktree
-2. Studies the codebase and reads the feature spec
+2. Reads the feature spec and studies the codebase
 3. Builds with TDD (tests first, then implementation)
-4. Verifies (tests, lint, type-check) and auto-fixes failures
-5. Publishes a PR via `/commit-push-pr`
-6. Self-reviews the diff — if issues are found, loops back to step 3
+4. Verifies (tests + lint + type-check) and auto-fixes failures
+5. Opens a PR via `/commit-push-pr`
+6. Self-reviews the diff — loops back to step 3 if issues are found
 
-### Discord Automation
+---
 
-Control the Discord Desktop app through Chrome DevTools Protocol.
+### 💬 Discord Automation
+
+Control Discord Desktop via Chrome DevTools Protocol.
 
 | Command | Description |
 |---------|-------------|
-| `/discord <action> [args...]` | Messaging, voice, navigation, search, friends, and status |
+| `/discord <action> [args...]` | Messaging, voice, navigation, search, status, and more |
 
-**Supported actions:** `send`, `reply`, `open-dm`, `join-voice`, `leave-voice`, `mute`, `unmute`, `search`, `set-status`, `open-server`, `open-channel`, and more.
+**Supported actions:** `send`, `reply`, `open-dm`, `join-voice`, `leave-voice`, `mute`, `unmute`, `search`, `set-status`, `open-server`, `open-channel`
 
 **Requirements:**
 - Discord Desktop running with `--remote-debugging-port=9225`
+
+---
+
+## Repo Structure
+
+```
+claude-skills/
+├── browser-recording/
+│   ├── record-browser/           — Start screencast + automate interactions
+│   └── stop-recording/           — Stop screencast + finalize MP4
+├── terminal-recording/
+│   ├── record-terminal/          — Record terminal sessions
+│   └── stop-terminal-recording/  — Stop recording + finalize output
+├── nova-loop-suite/
+│   ├── nova-loop/                — Autonomous build→verify→fix→publish→review
+│   ├── nova-help/                — Explain Nova Loop and list commands
+│   ├── cancel-nova/              — Stop active loop + clean up worktrees
+│   └── commit-push-pr/           — Stage, commit, push, and create/update PR
+└── discord/                      — Control Discord Desktop via CDP
+```
+
+---
 
 ## License
 
