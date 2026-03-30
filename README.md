@@ -1,6 +1,6 @@
 # Claude Code Skills
 
-Custom skills for [Claude Code](https://claude.com/claude-code) — browser automation, terminal recording, autonomous build loops, and Discord control.
+Custom skills for [Claude Code](https://claude.com/claude-code) — browser automation, terminal recording, autonomous build loops, web content extraction, and Discord control.
 
 ---
 
@@ -20,6 +20,7 @@ Install a specific skill:
 npx skills add jabreeflor/claude-skills --skill nova-loop
 npx skills add jabreeflor/claude-skills --skill record-browser
 npx skills add jabreeflor/claude-skills --skill discord
+npx skills add jabreeflor/claude-skills --skill agent-reach
 ```
 
 Install globally (available across all projects):
@@ -34,7 +35,7 @@ npx skills add jabreeflor/claude-skills -g
 git clone https://github.com/jabreeflor/claude-skills.git ~/claude-skills
 
 # Install everything at once
-for skill in ~/claude-skills/browser-recording/*/ ~/claude-skills/terminal-recording/*/ ~/claude-skills/nova-loop-suite/*/; do
+for skill in ~/claude-skills/browser-recording/*/ ~/claude-skills/terminal-recording/*/ ~/claude-skills/nova-loop-suite/*/ ~/claude-skills/web-tools/*/; do
   ln -sf "$skill" ~/.claude/skills/
 done
 ln -sf ~/claude-skills/discord ~/.claude/skills/discord
@@ -108,6 +109,22 @@ Fully autonomous build → verify → fix → publish → review cycle.
 
 ---
 
+### 🌐 Agent-Reach — Web Content Extraction
+
+Fetch and extract clean, readable content from any public URL using [Agent-Reach](https://github.com/Panniantong/Agent-Reach). Strips ads, navigation, and HTML clutter for LLM-ready output.
+
+| Command | Description |
+|---------|-------------|
+| `/agent-reach <url> [--raw] [--save <path>]` | Extract clean text from a URL, stripped of ads and navigation |
+
+**Use cases:** research agents, documentation fetching, article summarization, fact-checking with live web content.
+
+**Requirements:**
+- Python 3 installed
+- Agent-Reach is auto-installed on first use to `~/.local/share/agent-reach`
+
+---
+
 ### 💬 Discord Automation
 
 Control Discord Desktop via Chrome DevTools Protocol.
@@ -138,6 +155,8 @@ claude-skills/
 │   ├── nova-help/                — Explain Nova Loop and list commands
 │   ├── cancel-nova/              — Stop active loop + clean up worktrees
 │   └── commit-push-pr/           — Stage, commit, push, and create/update PR
+├── web-tools/
+│   └── agent-reach/              — Extract clean text from any public URL
 └── discord/                      — Control Discord Desktop via CDP
 ```
 
